@@ -5,6 +5,7 @@ import sys
 import wave
 import matplotlib.pyplot as plt
 import scipy.fftpack
+import struct
 # import math
 
 
@@ -56,7 +57,7 @@ def callback(in_data, frame_count, time_info, flag):
 
     # block bin implementation
     spectrum_weights = np.empty([0,0])
-    for band in NUM_BANDS:
+    for band in range(NUM_BANDS):
         np.append(spectrum_weights, band * FFT_RES/NUM_BANDS)
 
     spectrum_filt = np.multiply(spectrum, spectrum_weights) 
@@ -68,8 +69,8 @@ def callback(in_data, frame_count, time_info, flag):
     # freq = np.fft.rfftfreq(n, 1/RATE)
 
     # plt.plot(freq, np.abs(spectrum))
-    plt.plot(np.abs(spectrum))
-    plt.show
+    # plt.plot(np.abs(spectrum))
+    # plt.show
 
     # data_filt = np.fft.irfft(np.fft.ifftshift(spectrum_filt))
     data_filt = np.fft.irfft(spectrum_filt)
@@ -78,7 +79,7 @@ def callback(in_data, frame_count, time_info, flag):
     # data_filt = np.fft.ifft(spectrum, n=FFT_RES)
     # data_filt = np.fft.rifft(spectrum)
 
-    plt.show()
+    # plt.show()
     
     # for sample in data_filt:
     #     if np.isnan(sample):
