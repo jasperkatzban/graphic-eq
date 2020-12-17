@@ -14,3 +14,11 @@ in (tentative) order:
 - cool music visualizer that changes based on filter
 - space bar music play/pause
 - documentation website
+
+### IMPLEMENTATION
+- filter math
+    - lowpass
+    - highpass
+    - bandpass
+- filter compositor
+- apply filter to spectrum

@@ -26,6 +26,7 @@ if not live:
 
 p = pyaudio.PyAudio()
 
+
 def callback(in_data, frame_count, time_info, flag):
     if live:
         data = np.fromstring(in_data, dtype=np.float32) # using Numpy to convert to array for processing
@@ -50,7 +51,16 @@ def callback(in_data, frame_count, time_info, flag):
     # spectrum = np.fft.fftshift(np.fft.rfft(data))
     spectrum = np.fft.rfft(data, n=10)
 
-    spectrum_filt = spectrum                                            # FILTERING STAGE HERE
+
+    # filtering stage
+
+    # block bin implementation
+    spectrum_weights = np.empty([0,0])
+    for band in NUM_BANDS:
+        np.append(spectrum_weights, band * FFT_RES/NUM_BANDS)
+
+    spectrum_filt = np.multiply(spectrum, spectrum_weights) 
+
     print(len(spectrum))
     # print(spectrum[0])
 
