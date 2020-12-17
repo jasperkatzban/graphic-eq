@@ -4,10 +4,11 @@ import pyaudio
 import wave
 import time
 import sys
+import numpy 
 
 if len(sys.argv) < 2:
     print("Plays a wave file.\n\nUsage: %s filename.wav" % sys.argv[0])
-    sys.exit(-1)
+    sys.exit(-1)pyt
 
 wf = wave.open(sys.argv[1], 'rb')   
 
