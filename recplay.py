@@ -4,14 +4,18 @@ import time
 import sys
 import wave
 import matplotlib.pyplot as plt
+import scipy.fftpack
 # import math
 
 
-CHANNELS = 2 
+CHANNELS = 1
 RATE = 44100 # sample rate
-CHUNK = 2**5 # buffer size
+CHUNK = 2**10 # buffer size
+FFT_RES = RATE
+NUM_BANDS = 8
+BAND_VALS = [0, 0, 0, 1, 0, 0, 0, 0]
 
-live = False # switch between live or prerecoreded input
+live = True # switch between live or prerecoreded input
 
 if not live:
     if len(sys.argv) < 2:
@@ -26,9 +30,9 @@ def callback(in_data, frame_count, time_info, flag):
     if live:
         data = np.fromstring(in_data, dtype=np.float32) # using Numpy to convert to array for processing
     else:
-        sample = wf.readframes(frame_count)
-        data = np.frombuffer(sample, dtype=np.float32) 
-        # data = wf.readframes(frame_count)
+        # sample = str(wf.readframes(frame_count), 'windows-1252')  # bytes type # maybe try ISO-8859-1?
+        # sample = wf.readframes(frame_count)
+        data = np.fromstring(sample.hex(' ', -4), dtype=np.float32) 
 
     # try:
     #     spectrum = np.abs(np.fft.rfft(data)[1:])
@@ -36,38 +40,48 @@ def callback(in_data, frame_count, time_info, flag):
     #     spectrum = np.fft.fft(data)
     #     left, right = np.split(np.abs(FFT), 2)
     #     spectrum = np.add(left, right[::-1])
-    
-    spectrum = np.fft.rfft(data)
-    data_filt = np.fft.irfft(spectrum)
-    
-    for sample in data_filt:
-        if np.isnan(sample):
-        if sample == 'nan':
-            data_filt = [np.float(0)] * len(data_filt)
 
-    # spectrum = np.fft.fft(data)
-    # freq = np.fft.fftfreq(data.shape[-1])
+    # print(wf.readframes(frame_count))
+    # print(sample)
 
-    # raw_filt = np.fft.ifft(spectrum)
-    # # data_filt = np.frombuffer(raw_filt, dtype=np.float32) 
-    # data_filt = raw_filt.real
+    # print(data, "\n")
+
+    # spectrum = np.fft.fft(data, n=FFT_RES)
+    # spectrum = np.fft.fftshift(np.fft.rfft(data))
+    spectrum = np.fft.rfft(data, n=10)
+
+    spectrum_filt = spectrum                                            # FILTERING STAGE HERE
+    print(len(spectrum))
+    # print(spectrum[0])
+
+    n = data.size
+    # freq = np.fft.rfftfreq(n, 1/RATE)
+
+    # plt.plot(freq, np.abs(spectrum))
+    plt.plot(np.abs(spectrum))
+    plt.show
+
+    # data_filt = np.fft.irfft(np.fft.ifftshift(spectrum_filt))
+    data_filt = np.fft.irfft(spectrum_filt)
+
     
-    # print(data[0], "\t", data_filt[0])
-    print(data_filt.shape)
-    print(type(data_filt[0]))
-    # print(data_filt)
+    # data_filt = np.fft.ifft(spectrum, n=FFT_RES)
+    # data_filt = np.fft.rifft(spectrum)
 
-    # print(len(data), data)
-    # print(wf.getsampwidth())
-    # print(data[0])
+    plt.show()
+    
+    # for sample in data_filt:
+    #     if np.isnan(sample):
+    #     # if sample == 'nan':
+    #         data_filt = ([np.float(0)] * len(data_filt)).to_bytes()
+
     return data_filt, pyaudio.paContinue
-
 
 if live: # live audio stream setup
     stream = p.open(format=pyaudio.paFloat32,
                     channels=CHANNELS,
                     rate=RATE,
-                    output=True,
+                    output=False,
                     input=True,
                     stream_callback=callback,
                     frames_per_buffer=CHUNK)
