@@ -2,7 +2,7 @@
 in (tentative) order:
 
 ### IMMEDIATE
- - fix weird nan issue with fft transferring
+ - Audio taken from .wav file has issue decoding, produces 'nan's and is bad in general
 
 ### FEATURES
 - intake audio stream
