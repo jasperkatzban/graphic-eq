@@ -1,6 +1,10 @@
 ## TODO
 in (tentative) order:
 
+### IMMEDIATE
+ - fix weird nan issue with fft transferring
+
+### FEATURES
 - intake audio stream
 - take fft of audio
 - output audio stream
