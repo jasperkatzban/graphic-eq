@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import scipy.fftpack as ft
+import filters
 
 
 #%matplotlib tk
@@ -42,15 +43,23 @@ ax1.set_ylim([-2**15,(2**15)-1])
 ax2.set_ylim(20, CHUNK * 2)
 
 
+A = filtarray('default')
+T = A.build()
+
 while True:
     data = struct.unpack(str(CHUNK) + 'h', stream.read(CHUNK))
 
     fft_data = ft.rfft(data)
 
     # FILTERING HERE on fft_data
+    fft_data_filtered = np.multiply(fft_data,T)
 
     fft_line.set_ydata(fft_data * 2 / (CHUNK))
+
+    if time.monotonic() % .5 == 0:
+        T = A.build()
 
     line.set_ydata(data)
     fig.canvas.draw()
     fig.canvas.flush_events()
+    stream.write(data)
