@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 RATE = 44100
 CHUNK = 2048
-FFT_X = np.linspace(0,RATE,CHUNK)
+FFT_X = np.linspace(0,RATE,CHUNK) 
 
 class filter:
     """
@@ -14,6 +14,9 @@ class filter:
         """
         Init function
         """
+
+  
+
         self.width = len(FFT_X) # width of spectrum
         self.mode = mode # filtering mode
         self.f = f # cutoff or center frequency depending on mode
@@ -144,9 +147,9 @@ class filtarray:
 
         if self.preset == 'default' or self.preset == None:
             self.n = 8
-            self.f = np.logspace(1, np.log10(RATE/2-1000), num=self.n)
+            self.f = np.logspace(np.log10(20), np.log10(RATE/2), num=self.n)
             for i in range(self.n):
-                self.filters.append(filter('bp', f=self.f[i], g=1, q=20))
+                self.filters.append(filter('bp', f=self.f[i], g=0, q=2))
         elif self.preset == 'band':
             self.n = 1
             self.filters.append(filter('bp', 10000, g=10, q=10))
