@@ -72,6 +72,7 @@ class App:
         self.n += 1
         self.gen_bands()
 
-root = tk.Tk()
-app = App(root)
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = App(root)
+    root.mainloop()
