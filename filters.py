@@ -121,7 +121,6 @@ class filter:
             return filter.passthrough(self)
 
 
-
 class filtarray:
     """
     Filter array class
@@ -148,33 +147,35 @@ class filtarray:
             self.f = np.logspace(1, np.log10(RATE/2-1000), num=self.n)
             for i in range(self.n):
                 self.filters.append(filter('bp', f=self.f[i], g=1, q=20))
+        elif self.preset == 'band':
+            self.n = 1
+            self.filters.append(filter('bp', 10000, g=10, q=10))
+        
         return self.filters
-
     def build(self):
         """
         docstring
         """        
         # w = np.empty((self.n, self.width))
-        comp = np.empty((self.n,self.width))
+        comp = np.empty((self.n+1,self.width))
         for i in range(self.n):
             comp[i] = self.filters[i].get()
-        
+        comp[self.n] = np.ones(self.width)
+
         w = comp.sum(axis=0)
         return w # return array of spectrum weights
 
+    def plotresponse(self, test=False):
+        """
+        docstring
+        """
+        if test:
+            A = filtarray('b')
+            T = A.build()
+        else:
+            T = self.build()
 
-# A = filtarray('default')
-# T = A.build()
-# print(T)
-# print(A.f)
-# plt.plot(FFT_X, T) 
-
-# plt.xscale('log')
-# # plt.xlim([0,RATE/2])
-# plt.grid()
-
-# # plt.yscale('log')
-# # plt.xlim(0,len(FFT_X))
-# # plt.ylim(-inf)
-
-# plt.show()
+        plt.plot(FFT_X, T) 
+        plt.xscale('log')
+        plt.grid()
+        plt.show()
