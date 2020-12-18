@@ -7,33 +7,40 @@ import matplotlib.pyplot as plt
 import time
 import scipy.fftpack as ft
 import filters as f
+import gui as g
+import tkinter as tk
 
 
-#%matplotlib tk
-
-CHUNK = 1024 * 4
+CHUNK = 1024 * 1
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-PLOTTING = False
-DEBUG = True
+PLOTTING = True
+DEBUG = False
 
 p = pyaudio.PyAudio()
 
-# instantiate filter
-A = f.filtarray(preset='band')
-T = A.build()
 
+# instantiate filter
+# A = f.filtarray(preset='band')
+# T = A.build()
+
+# launch GUI
+root = tk.Tk()
+gui = g.App(root)
+root.mainloop()
 
 # funky function defs
 def callback(in_data, frame_count, time_info, status):   
     global data, fft_data, fft_data_filtered, filt_data_out, filt_data_plot
 
     data = struct.unpack(str(CHUNK) + 'h', in_stream.read(CHUNK))
-    fft_data = ft.fft(data)
+    fft_data = ft.rfft(data)
+    T = gui.get_spectrum()
+    print(T)
     fft_data_filtered = np.multiply(fft_data,T)
-    # fft_data_filtered = fft_data
-    filt_data_plot = ft.ifft(fft_data_filtered)
+    filt_data_plot = ft.irfft(fft_data_filtered)
+    np.clip(filt_data_plot,-30000, 30000)
     filt_data_out = tuple([int(i) for i in filt_data_plot])
 
     if DEBUG:
@@ -90,17 +97,28 @@ if DEBUG:
     print(type(data), 'made it')
 
 time.sleep(1)
+# root = tk.Tk()
+# gui = g.App(root)
+# root.mainloop()
+
 while out_stream.is_active():
+    # T = gui.get_spectrum()
+    # print(T)
     if PLOTTING:
         fft_line.set_ydata(fft_data * 2 / (CHUNK))
         filt_fft_line.set_ydata(fft_data_filtered * 2 / (CHUNK))
+        if DEBUG:
+            print('finish setting fft data')
         # if time.monotonic() % .5 == 0:
         #     T = A.build()
 
         line.set_ydata(data)
         filt_line.set_ydata(filt_data_out)
-
+        if DEBUG:
+            print('finish setting line data')
         fig1.canvas.draw()
         fig1.canvas.flush_events()
+        if DEBUG:
+            print('finish flush')
     else:
         time.sleep(0.01)

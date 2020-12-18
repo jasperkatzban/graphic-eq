@@ -1,10 +1,10 @@
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-import filters as f
 import matplotlib.pyplot as plt
-import struct
+import filters as f
 import numpy as np
+import struct
 
 CHUNK = 1024 * 2
 RATE = 44100
@@ -26,7 +26,7 @@ class App:
     def gen_bands(self):
         self.band = []
         for i in range(self.n):
-            self.band.append(tk.Scale(orient='vertical', from_=1, to=-1, resolution=.01, command=self.update_spectrum, width=15))
+            self.band.append(tk.Scale(orient='vertical', from_=10, to=-10, resolution=.01, command=self.update_spectrum, width=15))
             self.band[i].pack(fill=tk.Y, side=tk.LEFT, expand=True, padx=5, pady=5)
 
         self.A = f.filtarray(n=self.n, preset='default') # todo: implement n-band
@@ -62,7 +62,11 @@ class App:
         if PLOTTING:
             self.line.set_ydata(self.T)
             self.canvas.draw()
+        # print(self.T)
         return
+
+    def get_spectrum(self):
+        return self.T
 
     def decrease(self):
         self.n -= 1
