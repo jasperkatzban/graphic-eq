@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 RATE = 44100
-CHUNK = 2048
+CHUNK = 1024 * 1
 FFT_X = np.linspace(0,RATE,CHUNK) 
 
 class filter:

@@ -85,9 +85,20 @@ if PLOTTING:
     filt_fft_line, = ax4.semilogx(fft_x, np.random.rand(CHUNK), 'r')
 
     ax1.set_ylim([-2**15,(2**15)-1])
+    ax1.set_title('Unfiltered Audio')
+
     ax3.set_ylim([-2**15,(2**15)-1])
+    ax3.set_title('Filtered Audio')
+
     ax2.set_ylim(20, CHUNK * 2)
+    ax2.set_title('Unfiltered FFT')
+    ax2.set_xlabel('Frequency (Hz)')
+    ax2.set_ylabel('Amplitude')
+
     ax4.set_ylim(20, CHUNK * 2)
+    ax4.set_title('Filtered FFT')
+    ax4.set_xlabel('Frequency (Hz)')
+    ax4.set_ylabel('Amplitude')
 
 
 # begin streaming

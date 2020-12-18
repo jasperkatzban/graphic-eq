@@ -6,7 +6,7 @@ import filters as f
 import numpy as np
 import struct
 
-CHUNK = 1024 * 2
+CHUNK = 1024 * 1
 RATE = 44100
 FFT_X = np.linspace(0,RATE,CHUNK)
 DEFAULT_BANDS = 8
