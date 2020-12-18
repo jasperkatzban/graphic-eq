@@ -165,7 +165,7 @@ class filtarray:
             comp[i] = self.filters[i].get()
         comp[self.n] = np.ones(self.width)
 
-        w = comp.sum(axis=0)
+        w = np.clip(comp.sum(axis=0),0,2)
         return w # return array of spectrum weights
 
     def plotresponse(self, test=False):
